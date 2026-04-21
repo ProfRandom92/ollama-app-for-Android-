@@ -1186,7 +1186,7 @@ class _MainAppState extends State<MainApp> {
                                     keepAlive: 1,
                                   ),
                                 )
-                                .timeout(const Duration(seconds: 15));
+                                .timeout(const Duration(seconds: 60));
 
                             String text = "";
                             await for (final res in stream) {
@@ -1220,7 +1220,7 @@ class _MainAppState extends State<MainApp> {
                                     keepAlive: 1,
                                   ),
                                 )
-                                .timeout(const Duration(seconds: 15));
+                                .timeout(const Duration(seconds: 120));
                             if (chatAllowed) return;
                             if (request.message!.content.trim() == "") {
                               throw Exception();

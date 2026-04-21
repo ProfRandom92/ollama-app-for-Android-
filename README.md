@@ -11,6 +11,7 @@ A modern and easy-to-use client for Ollama. Have the greatest experience while k
 - [Ollama App](#ollama-app)
   - [Installation](#installation)
   - [Initial Setup](#initial-setup)
+  - [Ollama Cloud](#ollama-cloud)
   - [Side Menu](#side-menu)
   - [Model Selector](#model-selector)
   - [Multimodal Model Input](#multimodal-model-input)
@@ -44,6 +45,20 @@ In the bit host text field, you have to enter the base URL of your instance. The
 This address will be checked, so no worry about entering the wrong one. The disadvantage of this is that your server has to be running even if you don't want to chat with it at that moment. If you set the host once, and your server is offline, the requests will fail, but the host will stay saved if you don't change it yourself. Don't worry, just go into the side menu and click the settings button to change it.
 
 That's it, you can now just chat. Enter a message into the box at the bottom and click the send icon.
+
+## Ollama Cloud
+
+If you don't want to run a local Ollama server (for example on a Samsung A33 or any phone without a home server), you can use the official **Ollama Cloud** API instead. Cloud models such as `gpt-oss:120b-cloud`, `qwen3-coder:480b-cloud`, `deepseek-v3.1:671b-cloud` run on Ollama's infrastructure and are accessed with the exact same API the app already uses.
+
+1. Sign in at [ollama.com](https://ollama.com/) and create an API key at [ollama.com/settings/keys](https://ollama.com/settings/keys).
+2. Open the app's sidebar and tap **Settings**.
+3. In the new **Ollama Cloud** section, paste your API key and tap the cloud-upload icon on the right of the input field.
+
+The host will be set to `https://ollama.com` and the `Authorization: Bearer <key>` header is configured automatically. After that, open the model selector at the top of the chat to pick any of the cloud models you have access to. You can mix and match: if your server host is reachable, the local host still works; to switch to cloud just change the host field or tap *Connect to Ollama Cloud* again.
+
+To disconnect, scroll to the Ollama Cloud section and tap **Disconnect from Ollama Cloud** – the stored key and auth header are wiped.
+
+> Privacy note: Using Ollama Cloud means your messages are sent to ollama.com. If you want full privacy, keep using a local server instead.
 
 ## Side Menu
 

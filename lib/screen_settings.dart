@@ -31,6 +31,8 @@ class _ScreenSettingsState extends State<ScreenSettings> {
       text: (useHost)
           ? fixedHost
           : (prefs?.getString("host") ?? "http://localhost:11434"));
+  final cloudKeyController = TextEditingController(
+      text: prefs?.getString("cloudApiKey") ?? "");
   bool hostLoading = false;
   bool hostInvalidUrl = false;
   bool hostInvalidHost = false;
@@ -50,26 +52,43 @@ class _ScreenSettingsState extends State<ScreenSettings> {
       return;
     }
 
-    http.Response request;
+    final headers =
+        (jsonDecode(prefs!.getString("hostHeaders") ?? "{}") as Map)
+            .cast<String, String>();
+
+    bool valid = false;
     try {
-      request = await http
-          .get(
-        Uri.parse(tmpHost),
-        headers: (jsonDecode(prefs!.getString("hostHeaders") ?? "{}") as Map)
-            .cast<String, String>(),
-      )
-          .timeout(const Duration(seconds: 5), onTimeout: () {
+      final request = await http
+          .get(Uri.parse(tmpHost), headers: headers)
+          .timeout(const Duration(seconds: 8), onTimeout: () {
         return http.Response("Error", 408);
       });
-    } catch (e) {
-      setState(() {
-        hostInvalidHost = true;
-        hostLoading = false;
-      });
-      return;
+      if ((request.statusCode == 200 && request.body == "Ollama is running") ||
+          (Uri.parse(tmpHost).toString() == fixedHost)) {
+        valid = true;
+      }
+    } catch (_) {}
+
+    // Fallback / Cloud check: /api/tags must answer 200 + valid JSON with
+    // a "models" array. This works for Ollama Cloud (ollama.com) where the
+    // root URL returns the marketing website instead of "Ollama is running".
+    if (!valid) {
+      try {
+        final tagsResponse = await http
+            .get(Uri.parse("$tmpHost/api/tags"), headers: headers)
+            .timeout(const Duration(seconds: 8), onTimeout: () {
+          return http.Response("Error", 408);
+        });
+        if (tagsResponse.statusCode == 200) {
+          final body = jsonDecode(tagsResponse.body);
+          if (body is Map && body["models"] is List) {
+            valid = true;
+          }
+        }
+      } catch (_) {}
     }
-    if ((request.statusCode == 200 && request.body == "Ollama is running") ||
-        (Uri.parse(tmpHost).toString() == fixedHost)) {
+
+    if (valid) {
       setState(() {
         hostLoading = false;
         host = tmpHost;
@@ -85,6 +104,22 @@ class _ScreenSettingsState extends State<ScreenSettings> {
       });
     }
     HapticFeedback.selectionClick();
+  }
+
+  void applyOllamaCloud() async {
+    final key = cloudKeyController.text.trim();
+    if (key.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(AppLocalizations.of(context)!.settingsCloudKeyMissing),
+          showCloseIcon: true));
+      return;
+    }
+    prefs!.setString("cloudApiKey", key);
+    prefs!.setString(
+        "hostHeaders", jsonEncode({"Authorization": "Bearer $key"}));
+    hostInputController.text = "https://ollama.com";
+    HapticFeedback.selectionClick();
+    checkHost();
   }
 
   final systemInputController = TextEditingController(
@@ -106,6 +141,7 @@ class _ScreenSettingsState extends State<ScreenSettings> {
   void dispose() {
     super.dispose();
     hostInputController.dispose();
+    cloudKeyController.dispose();
   }
 
   Widget toggle(String text, bool value, Function(bool value) onChanged) {
@@ -327,6 +363,71 @@ class _ScreenSettingsState extends State<ScreenSettings> {
                                                 fontFamily: "monospace"))
                                       ],
                                     )))),
+                  title(AppLocalizations.of(context)!.settingsTitleCloud,
+                      bottom: 24),
+                  TextField(
+                    controller: cloudKeyController,
+                    keyboardType: TextInputType.visiblePassword,
+                    obscureText: true,
+                    autocorrect: false,
+                    enableSuggestions: false,
+                    decoration: InputDecoration(
+                        labelText:
+                            AppLocalizations.of(context)!.settingsCloudApiKey,
+                        hintText: "ollama_...",
+                        prefixIcon: const Icon(Icons.key_rounded),
+                        suffixIcon: IconButton(
+                            tooltip: AppLocalizations.of(context)!
+                                .settingsCloudConnect,
+                            onPressed: hostLoading ? null : applyOllamaCloud,
+                            icon: const Icon(Icons.cloud_upload_rounded)),
+                        border: const OutlineInputBorder()),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(children: [
+                    const Icon(Icons.info_outline_rounded, color: Colors.grey),
+                    const SizedBox(width: 16),
+                    Expanded(
+                        child: Text(
+                            AppLocalizations.of(context)!.settingsCloudHint,
+                            style: const TextStyle(color: Colors.grey)))
+                  ]),
+                  const SizedBox(height: 8),
+                  InkWell(
+                      onTap: () {
+                        HapticFeedback.selectionClick();
+                        launchUrl(
+                            mode: LaunchMode.inAppBrowserView,
+                            Uri.parse("https://ollama.com/settings/keys"));
+                      },
+                      child: Row(children: [
+                        const Icon(Icons.open_in_new_rounded),
+                        const SizedBox(width: 16, height: 42),
+                        Expanded(
+                            child: Text(AppLocalizations.of(context)!
+                                .settingsCloudGetKey))
+                      ])),
+                  (cloudKeyController.text.isEmpty)
+                      ? const SizedBox.shrink()
+                      : InkWell(
+                          onTap: () {
+                            HapticFeedback.selectionClick();
+                            cloudKeyController.text = "";
+                            prefs!.remove("cloudApiKey");
+                            prefs!.setString("hostHeaders", "{}");
+                            setState(() {});
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text(AppLocalizations.of(context)!
+                                    .settingsCloudDisconnected),
+                                showCloseIcon: true));
+                          },
+                          child: Row(children: [
+                            const Icon(Icons.logout_rounded),
+                            const SizedBox(width: 16, height: 42),
+                            Expanded(
+                                child: Text(AppLocalizations.of(context)!
+                                    .settingsCloudDisconnect))
+                          ])),
                   title(AppLocalizations.of(context)!.settingsTitleBehavior,
                       bottom: 24),
                   TextField(

@@ -397,5 +397,45 @@
     "@settingsMainDeveloper": {
         "description": "Text displayed as description for main developer button",
         "context": "Visible in the settings view"
+    },
+    "settingsTitleCloud": "Ollama Cloud",
+    "@settingsTitleCloud": {
+        "description": "Title of the Ollama Cloud settings section",
+        "context": "Visible in the settings view"
+    },
+    "settingsCloudApiKey": "Ollama Cloud API key",
+    "@settingsCloudApiKey": {
+        "description": "Label for the Ollama Cloud API key input",
+        "context": "Visible in the settings view"
+    },
+    "settingsCloudConnect": "Connect to Ollama Cloud",
+    "@settingsCloudConnect": {
+        "description": "Tooltip / action for connecting to Ollama Cloud with the entered API key",
+        "context": "Visible in the settings view"
+    },
+    "settingsCloudHint": "Enter an API key to use hosted models from ollama.com. The host and auth header will be configured automatically.",
+    "@settingsCloudHint": {
+        "description": "Explanatory text under the cloud API key input",
+        "context": "Visible in the settings view"
+    },
+    "settingsCloudGetKey": "Get an API key on ollama.com",
+    "@settingsCloudGetKey": {
+        "description": "Link / button leading to ollama.com key management",
+        "context": "Visible in the settings view"
+    },
+    "settingsCloudDisconnect": "Disconnect from Ollama Cloud",
+    "@settingsCloudDisconnect": {
+        "description": "Removes the stored Ollama Cloud API key",
+        "context": "Visible in the settings view"
+    },
+    "settingsCloudDisconnected": "Ollama Cloud disconnected",
+    "@settingsCloudDisconnected": {
+        "description": "Snackbar shown after clearing the cloud key",
+        "context": "Visible in the settings view"
+    },
+    "settingsCloudKeyMissing": "Please enter an API key first",
+    "@settingsCloudKeyMissing": {
+        "description": "Snackbar when the user tries to connect without entering a key",
+        "context": "Visible in the settings view"
     }
 }

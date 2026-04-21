@@ -397,5 +397,45 @@
     "@settingsMainDeveloper": {
         "description": "Text displayed as description for main developer button",
         "context": "Visible in the settings view"
+    },
+    "settingsTitleCloud": "Ollama Cloud",
+    "@settingsTitleCloud": {
+        "description": "Title of the Ollama Cloud settings section",
+        "context": "Visible in the settings view"
+    },
+    "settingsCloudApiKey": "Ollama Cloud API-Schlüssel",
+    "@settingsCloudApiKey": {
+        "description": "Label for the Ollama Cloud API key input",
+        "context": "Visible in the settings view"
+    },
+    "settingsCloudConnect": "Mit Ollama Cloud verbinden",
+    "@settingsCloudConnect": {
+        "description": "Tooltip / action for connecting to Ollama Cloud with the entered API key",
+        "context": "Visible in the settings view"
+    },
+    "settingsCloudHint": "Gib einen API-Schlüssel ein, um Cloud-Modelle von ollama.com zu verwenden. Host und Authentifizierungs-Header werden automatisch gesetzt.",
+    "@settingsCloudHint": {
+        "description": "Explanatory text under the cloud API key input",
+        "context": "Visible in the settings view"
+    },
+    "settingsCloudGetKey": "API-Schlüssel auf ollama.com holen",
+    "@settingsCloudGetKey": {
+        "description": "Link / button leading to ollama.com key management",
+        "context": "Visible in the settings view"
+    },
+    "settingsCloudDisconnect": "Von Ollama Cloud trennen",
+    "@settingsCloudDisconnect": {
+        "description": "Removes the stored Ollama Cloud API key",
+        "context": "Visible in the settings view"
+    },
+    "settingsCloudDisconnected": "Ollama Cloud getrennt",
+    "@settingsCloudDisconnected": {
+        "description": "Snackbar shown after clearing the cloud key",
+        "context": "Visible in the settings view"
+    },
+    "settingsCloudKeyMissing": "Bitte zuerst einen API-Schlüssel eingeben",
+    "@settingsCloudKeyMissing": {
+        "description": "Snackbar when the user tries to connect without entering a key",
+        "context": "Visible in the settings view"
     }
 }

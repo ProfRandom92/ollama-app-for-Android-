@@ -28,7 +28,7 @@ void setModel(BuildContext context, Function setState) {
                       .cast<String, String>(),
               baseUrl: "$host/api")
           .listModels()
-          .timeout(const Duration(seconds: 5));
+          .timeout(const Duration(seconds: 15));
       for (var i = 0; i < list.models!.length; i++) {
         models.add(list.models![i].model!.split(":")[0]);
         modelsReal.add(list.models![i].model!);
